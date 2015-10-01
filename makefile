@@ -8,11 +8,11 @@ ifeq ($(OS),Windows_NT)
 	FIX_PATH =$(subst /,\,$1)
 else
 	CHK_DIR_EXISTS = test -d $1 || mkdir -p $1
-	NUKE = rm -r
-	RM = rm
+	NUKE = rm -r $1
+	RM = rm -f $1
 	CHDIR = cd $1
 	COPY_DIR = cp -rv $1 $2
-	FIX_PATH = $1
+	FIX_PATH =$(subst //,/,$1)
 endif
 
 PROJECT_DIR :=$(call FIX_PATH,$(dir $(realpath $(lastword $(MAKEFILE_LIST)))))
@@ -32,5 +32,5 @@ clean:
 	$(call RM,$(PROJECT_DIR)*.pdf)
 	$(call RM,$(PLOTS_DIR)*.tex)
 
-$(call FIX_PATH, $(PLOTS_DIR)/)%.tex: $(call FIX_PATH, $(PLOTS_DIR)/)%.plt
+$(call FIX_PATH,$(PLOTS_DIR)/)%.tex: $(call FIX_PATH, $(PLOTS_DIR)/)%.plt
 	gnuplot -e "output_file='$@';term_type='latex'" -c "$<"
