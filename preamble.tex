@@ -20,6 +20,7 @@
 \titleformat{\subsubsection}{\bf \it}{\qquad}{5pt}{}[]
 
 \numberwithin{equation}{section}
+\newcommand\norm[1]{\left\lVert#1\right\rVert} %http://tex.stackexchange.com/questions/107186/how-to-write-norm-which-adjusts-its-size
 \renewcommand{\O}{\mathcal{O}}
 \renewcommand{\bf}{\bfseries}
 \renewcommand{\sc}{\scshape}
@@ -33,7 +34,9 @@
 \newcommand{\nn}{\\\nonumber}
 \newcommand{\curl}{\text{curl }}
 \newcommand{\inp}[2]{\left<#1, #2\right>}
+\renewcommand{\d}[1]{\,\text{d}#1}
 \newcommand{\pdrv}[2][x]{\frac{\partial #2}{\partial #1}}
+\newcommand{\drv}[2][x]{\frac{\text{d} #2}{\text{d} #1}}
 \renewcommand{\maketitle}[2][]{\begin{center}
 {{\bf \huge \sc #2\\
 \ifthenelse{\equal{#1}{}}{}{{\vspace{-12pt} \Large #1}\\\vspace{5pt}}
