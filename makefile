@@ -4,28 +4,30 @@ ifeq ($(OS),Windows_NT)
 	NUKE = rmdir /s /q
 	RM = del $1
 	COPY_DIR = xcopy $1 $2 /E /H /Y
-	FIX_PATH = $(subst /,\,$1)
+	CHDIR = chdir $1
+	FIX_PATH =$(subst /,\,$1)
 else
 	CHK_DIR_EXISTS = test -d $1 || mkdir -p $1
 	NUKE = rm -r
 	RM = rm
+	CHDIR = cd $1
 	COPY_DIR = cp -rv $1 $2
 	FIX_PATH = $1
 endif
 
-PROJECT_DIR := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
-PLOTS_DIR := $(PROJECT_DIR)img
-PLOTS_PLT := $(call rwildcard, $(PLOTS_DIR), *.plt)
-PLOTS_TEX := $(patsubst %.plt, %.tex, $(PLOTS_PLT))
+PROJECT_DIR :=$(call FIX_PATH,$(dir $(realpath $(lastword $(MAKEFILE_LIST)))))
+PLOTS_DIR :=$(call FIX_PATH,$(PROJECT_DIR)plots/)
+PLOTS_PLT :=$(call rwildcard,$(PLOTS_DIR), *.plt)
+PLOTS_TEX :=$(patsubst %.plt,%.tex,$(PLOTS_PLT))
 
 all: $(PLOTS_TEX)
-	@echo $(PLOTS_DIR)
-	pdflatex -interaction=nonstopmode main.tex
+	pdflatex -interaction=nonstopmode $(PROJECT_DIR)main.tex
 clean:
-	$(call RM, *.out)
-	$(call RM, *.log)
-	$(call RM, *.aux)
-	$(call RM, *.pdf)
-	$(call RM, $(call FIX_PATH, $(PLOTS_DIR)/*.tex))
-$(PLOTS_DIR)/%.tex: $(PLOTS_DIR)/%.plt
+	$(call RM,$(PROJECT_DIR)*.out)
+	$(call RM,$(PROJECT_DIR)*.log)
+	$(call RM,$(PROJECT_DIR)*.aux)
+	$(call RM,$(PROJECT_DIR)*.pdf)
+	$(call RM,$(PLOTS_DIR)*.tex)
+
+$(PLOTS_DIR)%.tex: $(PLOTS_DIR)%.plt
 	gnuplot -e "output_file='$@';term_type='latex'" -c "$<"
