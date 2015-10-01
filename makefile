@@ -16,9 +16,12 @@ else
 endif
 
 PROJECT_DIR :=$(call FIX_PATH,$(dir $(realpath $(lastword $(MAKEFILE_LIST)))))
-PLOTS_DIR :=$(call FIX_PATH,$(PROJECT_DIR)plots/)
-PLOTS_PLT :=$(call rwildcard,$(PLOTS_DIR), *.plt)
+PLOTS_DIR :=$(PROJECT_DIR)plots/
+PLOTS_PLT :=$(call rwildcard,$(PLOTS_DIR),*.plt)
 PLOTS_TEX :=$(patsubst %.plt,%.tex,$(PLOTS_PLT))
+PLOTS_DIR :=$(call FIX_PATH, $(PLOTS_DIR))
+PLOTS_PLT :=$(call FIX_PATH, $(PLOTS_PLT))
+PLOTS_TEX :=$(call FIX_PATH, $(PLOTS_TEX))
 
 all: $(PLOTS_TEX)
 	pdflatex -interaction=nonstopmode $(PROJECT_DIR)main.tex
@@ -29,5 +32,5 @@ clean:
 	$(call RM,$(PROJECT_DIR)*.pdf)
 	$(call RM,$(PLOTS_DIR)*.tex)
 
-$(PLOTS_DIR)%.tex: $(PLOTS_DIR)%.plt
+$(call FIX_PATH, $(PLOTS_DIR)/)%.tex: $(call FIX_PATH, $(PLOTS_DIR)/)%.plt
 	gnuplot -e "output_file='$@';term_type='latex'" -c "$<"
