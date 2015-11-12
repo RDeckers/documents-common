@@ -15,7 +15,7 @@ else
 	FIX_PATH =$(subst //,/,$1)
 endif
 
-PROJECT_DIR :=$(call FIX_PATH,$(dir $(realpath $(lastword $(MAKEFILE_LIST)))))
+PROJECT_DIR :=$(call FIX_PATH,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 PLOTS_DIR :=$(PROJECT_DIR)plots/
 PLOTS_PLT :=$(call rwildcard,$(PLOTS_DIR),*.plt)
 PLOTS_TEX :=$(patsubst %.plt,%.tex,$(PLOTS_PLT))
